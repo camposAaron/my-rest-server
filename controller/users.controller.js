@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const {response, request } = require('express');
-const { validationResult } = require('express-validator');
 const User = require('../models/User');
 
 const getUsers = (req = request, res = response) => {
@@ -24,8 +23,6 @@ const putUsers = (req, res) => {
 }
 
 const postUsers = async(req, res) => {
-
-    
 
     const { name, password, email, role} = req.body;
     const user = new User({ name, password, email, role });
