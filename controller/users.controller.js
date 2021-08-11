@@ -3,16 +3,23 @@ const { response, request } = require('express');
 const User = require('../models/User');
 
 
-const getUsers = (req = request, res = response) => {
-    // const { q, page, limit = 1, apikey } = req.query;
+const getUsers = async(req = request, res = response) => {
+   
+    const { limite = 5, desde } = req.query;
+    const query = { state : true};
 
+    const [total, users] = await Promise.all([
+        User.countDocuments(query),
+        User.find(query)    
+        .skip(Number(desde))
+        .limit(Number(limite))
+    ]);
+
+  
     res.json({
-        name: 'get api - controller',
-        q,
-        page,
-        limit,
-        apikey
-    })
+        total,
+        users
+    });
 }
 
 const putUsers = async (req, res) => {
@@ -49,10 +56,15 @@ const postUsers = async (req, res) => {
     res.json(user);
 }
 
-const deleteUsers = (req, res) => {
-    res.json({
-        name: 'delete api - controller'
-    });
+const deleteUsers = async(req, res) => {
+    const {id} = req.params;
+
+    //borrado fisico base de datos
+    // const user = await User.findByIdAndDelete(id);
+
+    //cambiar estado de usuario.
+    const user = await User.findByIdAndUpdate(id, {state : false});
+    res.json(user);
 }
 
 const patchUsers = (req, res) => {
