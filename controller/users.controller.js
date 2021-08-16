@@ -60,10 +60,6 @@ const deleteUsers = async(req, res) => {
     
     const {id} = req.params;
 
-    //borrado fisico base de datos
-    // const user = await User.findByIdAndDelete(id);
-
-    //cambiar estado de usuario.
     const user = await User.findByIdAndUpdate(id, {state : false});
     const userAutenticated = req.user;
     res.json({user, userAutenticated});

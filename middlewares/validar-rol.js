@@ -14,8 +14,26 @@ const isAdminRole = (req, res = response, next) => {
 
     next();
 
-}   
+} 
+
+const haveRole = ( ...rols ) => {
+    return (req, res, next) => {
+    
+        if( !req.user ){
+           return res.status(500).json({msg : 'no se puede verficar un usuario sin haber generado un token'});
+        }
+ 
+        if( !rols.includes( req.user.role ) ){
+           return  res.status(401).json({
+                msg : `El servicio require uno de los siguientes roles: ${ rols }`
+            });
+        }
+    
+        next();
+    }
+}
 
 module.exports = {
-    isAdminRole
+    isAdminRole,
+    haveRole
 }
