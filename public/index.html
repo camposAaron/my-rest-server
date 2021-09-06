@@ -17,7 +17,7 @@
         data-callback="handleCredentialResponse"  data-auto_prompt="false">
     </div>
     
-    <div class="g_id_signin" data-type="standard" data-size="medium" data-theme="outline" data-text="sign_in_with"
+    <div class="g_id_signin" data-type="standard" data-size="small" data-theme="outline" data-text="sign_in_with"
         data-shape="rectangular" data-logo_alignment="left">
     </div>
 
@@ -26,10 +26,12 @@
 
     <script>
 
-        const url = window.location.hostname.includes('localhost') ? 
+        var url = window.location.hostname.includes('localhost') ? 
                     'http://localhost:5000/api/auth/google' :
                     'https://myrest-server-xd.herokuapp.com/api/auth/google'
         
+
+        console.log(url);
 
         function handleCredentialResponse(response) {
             // decodeJwtResponse() is a custom function defined by you

@@ -1,5 +1,5 @@
 const Rol = require('../models/role');
-const User = require('../models/User');
+const { User, Category } = require('../models/index');
 
 //verificar si el rol es valido
 const isRoleValid = async (role = '') => {
@@ -26,9 +26,17 @@ const existsId = async ( id ) => {
     }
 }
 
+const existsCategoryId = async( id ) => {
+    const idfound = await Category.findById( id );
+    if(!idfound){
+        throw new Error(`El id: ${id} no existe`);
+    }
+}
+
 
 module.exports = {
     isRoleValid,
     existsEmail,
-    existsId
+    existsId,
+    existsCategoryId
 }
