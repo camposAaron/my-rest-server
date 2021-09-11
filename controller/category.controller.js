@@ -1,9 +1,6 @@
 const { response, request } = require("express");
-const { find, findById } = require("../models/category");
 const {
-    User,
-    Category,
-    Role
+    Category
 } = require('../models/index');
 
 
@@ -44,6 +41,7 @@ const createCategory = async(req = request, res = response) =>{
     const  name = req.body.name.toUpperCase();
 
     const categoryDB = await Category.findOne({ name });
+    
 
     if(categoryDB){
         return res.status(400).json({

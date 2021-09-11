@@ -13,7 +13,6 @@ const isAdminRole = (req, res = response, next) => {
     }
 
     next();
-
 } 
 
 
