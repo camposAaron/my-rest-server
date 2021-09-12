@@ -28,21 +28,20 @@ const existsId = async ( id ) => {
 
 const existsCategoryId = async( id ) => {
     const idfound = await Category.findById( id );
+    
     if(!idfound){
         throw new Error(`El id: ${id} no existe`);
     }
+    
 }
 
 const existsProduct = async(id) => {
     const idFound = await Product.findById(id);
 
-  
-
     if(!idFound.state){
         throw new Error(`id no encontrado -state: false`);
     }
     
-
     if(!idFound){
         throw new Error(`el id: ${id} no existe`);
     }

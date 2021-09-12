@@ -62,8 +62,31 @@ const getProductById = async(req, res = response) => {
     res.json(product);
 }
 
+const deleteProduct = async(req, res =response) => {
+    const { id } = req.params;
+    
+    const product =  await Product.findByIdAndUpdate( id, {state : false}, {new : true});
+    
+    res.json(product);
+}
+
+const updateProduct = async(req, res = response) => {
+    const { id } = req.params;
+    const { _id, user, ...rest} = req.body;
+
+    user = req.user._id;
+
+    const product = await Product.findByIdAndUpdate( id, {rest, user}, {new : true});
+
+    res.json(product);
+
+
+}
+
 module.exports = {
     createProduct,
     getProducts,
-    getProductById
+    getProductById,
+    updateProduct,
+    deleteProduct
 }
