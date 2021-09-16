@@ -11,15 +11,27 @@ const uploadArchive = (req, res = response) => {
 
     const { archivo } = req.files;
 
-    const rutaDeCarga = path.join(__dirname , '../uploads/' , archivo.name);
+    /*Validar extension */
+    const nameSplit = archivo.name.split('.');
+    const extension = nameSplit[ nameSplit.length - 1 ];
 
-    archivo.mv(rutaDeCarga, (err) => {
-        if (err) {
-            return res.status(500).json({err});
-        }
+    const validExtensions = ['jpg', 'png', 'jpeg','gif'];
 
-        res.send('Archivo subido a: ' + rutaDeCarga);
-    });
+    if(!validExtensions.includes(extension)){
+        return res.status(400).json({msg : `La extension '${extension}' no es permitida, ${validExtensions}`});
+    }
+
+    console.log(nameSplit, extension);
+
+    // const rutaDeCarga = path.join(__dirname , '../uploads/' , archivo.name);
+
+    // archivo.mv(rutaDeCarga, (err) => {
+    //     if (err) {
+    //         return res.status(500).json({err});
+    //     }
+
+    //     res.send('Archivo subido a: ' + rutaDeCarga);
+    // });
 
 }
 
