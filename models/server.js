@@ -12,7 +12,8 @@ class Server{
             find :       '/api/find',
             users :      '/api/user',
             products:     '/api/product',
-            categories : '/api/category'
+            categories : '/api/category',
+            uploads :    '/api/uploads'
         }
         
         
@@ -44,6 +45,7 @@ class Server{
         this.app.use(this.path.users, require('../routes/user'));
         this.app.use(this.path.products, require('../routes/product'));
         this.app.use(this.path.categories, require('../routes/category'));
+        this.app.use(this.path.uploads, require('../routes/upload'));
     }
 
     listen(){
