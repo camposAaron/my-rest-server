@@ -1,40 +1,71 @@
-const path = require('path');
+
 const { response } = require("express");
+const { uploadArchive } = require('../helpers');
+const { User, Product } = require('../models');
 
-const uploadArchive = (req, res = response) => {
+const uploadImg = async (req, res = response) => {
 
-    if (!req.files || Object.keys(req.files).length === 0 || !req.files.archivo) {
-        return res.status(400).json({
-            msg: 'No se encontraron los archivos a subir'
-        });
+    try {
+
+        const name = await uploadArchive(req.files);
+        // const name = await uploadArchive(req.files, ['md', 'txt'],'textos');
+        res.json({ name });
+
+    } catch (err) {
+
+        res.status(400).json({ err });
+    }
+}
+
+
+const updateImg = async (req, res = response) => {
+    const { collection, id } = req.params;
+
+    let model;
+
+    switch (collection) {
+        case 'users':
+            model = await User.findById(id);
+            if (!model) {
+                return res.status(400).json({
+                    msg: `El usuario con id : ${id} no existe`
+                });
+            }
+
+            break;
+
+        case 'products':
+            model = await Product.findById(id);
+            if (!model) {
+                return res.status(400).json({
+                    msg: `El producto con id : ${id} no existe`
+                });
+            }
+
+            break;
+
+        default:
+            return res.status(500).json({
+                msg: `la coleccion ${collection} no esta definida`
+            });
+            break;
     }
 
-    const { archivo } = req.files;
+    try {
+        const name = await uploadArchive(req.files, undefined, collection);
+        model.img = name;
 
-    /*Validar extension */
-    const nameSplit = archivo.name.split('.');
-    const extension = nameSplit[ nameSplit.length - 1 ];
+        await model.save();
 
-    const validExtensions = ['jpg', 'png', 'jpeg','gif'];
+        res.json({ model });
 
-    if(!validExtensions.includes(extension)){
-        return res.status(400).json({msg : `La extension '${extension}' no es permitida, ${validExtensions}`});
+    } catch (msg) {
+        res.status(400).json({ msg });
     }
-
-    console.log(nameSplit, extension);
-
-    // const rutaDeCarga = path.join(__dirname , '../uploads/' , archivo.name);
-
-    // archivo.mv(rutaDeCarga, (err) => {
-    //     if (err) {
-    //         return res.status(500).json({err});
-    //     }
-
-    //     res.send('Archivo subido a: ' + rutaDeCarga);
-    // });
 
 }
 
 module.exports = {
-    uploadArchive
+    uploadImg,
+    updateImg
 }
