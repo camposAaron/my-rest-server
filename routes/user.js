@@ -45,7 +45,7 @@ router.delete('/:id',[
     validarCampos
 ], deleteUsers);
 
-router.patch('/', patchUsers);
+
 
 module.exports = router;
 

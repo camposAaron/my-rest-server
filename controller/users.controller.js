@@ -65,17 +65,11 @@ const deleteUsers = async(req, res) => {
     res.json({user, userAutenticated});
 }
 
-const patchUsers = (req, res) => {
-    res.json({
 
-        name: 'patch from api'
-    });
-}
 
 module.exports = {
     getUsers,
     putUsers,
     postUsers,
-    patchUsers,
     deleteUsers
 }
