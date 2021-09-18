@@ -1,4 +1,8 @@
 const { response } = require("express");
+
+const cloudinary = require('cloudinary').v2
+cloudinary.config( process.env.CLOUDINARY_URL);
+
 const path = require('path');
 const fs = require('fs');
 const { uploadArchive } = require('../helpers');
@@ -21,7 +25,64 @@ const uploadImg = async (req, res = response) => {
     }
 }
 
+/*Carga los archivos al hosting cloudinary */
+const CloudinaryUpdateImg = async (req, res = response) => {
 
+    const { collection, id } = req.params;
+
+    let model;
+
+    switch (collection) {
+        case 'users':
+            model = await User.findById(id);
+            if (!model) {
+                return res.status(400).json({
+                    msg: `El usuario con id : ${id} no existe`
+                });
+            }
+
+            break;
+
+        case 'products':
+            model = await Product.findById(id);
+            if (!model) {
+                return res.status(400).json({
+                    msg: `El producto con id : ${id} no existe`
+                });
+            }
+
+            break;
+
+        default:
+            return res.status(500).json({
+                msg: `la coleccion ${collection} no esta definida`
+            });
+            break;
+    }
+
+    try {
+        //Limpiar imagen previa
+        if (model.img) {
+            const imgSplited = model.img.split('/').pop();
+            const [ public_id ] = imgSplited.split('.'); 
+            await cloudinary.uploader.destroy(`${collection}/${public_id}`);
+        }
+
+        const { tempFilePath } = req.files.archivo;
+        const { secure_url } =  await cloudinary.uploader.upload(tempFilePath, {folder : `${collection}`});
+              
+        model.img = secure_url;
+
+        await model.save();
+
+        res.json({ model });
+
+    } catch (err) {
+        res.status(400).json({ err });
+    }
+}
+
+/* Carga archivos al servidor */
 const updateImg = async (req, res = response) => {
 
     const { collection, id } = req.params;
@@ -124,5 +185,6 @@ const getImage = async (req, res = response) => {
 module.exports = {
     uploadImg,
     updateImg,
-    getImage
+    getImage,
+    CloudinaryUpdateImg
 }
